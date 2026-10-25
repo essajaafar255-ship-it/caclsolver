@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google.com</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000000;
+            font-family: Arial, sans-serif;
+        }
+        #access-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            z-index: 10;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .input-panel {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        input[type="password"] {
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #error-msg {
+            color: #ff4d4d;
+            margin-top: 10px;
+            font-size: 14px;
+            height: 18px;
+        }
+        #display-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            justify-content: center;
+            align-items: center;
+        }
+        #thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="access-container">
+        <div class="input-panel">
+            <h2>System Authentication</h2>
+            <p style="margin-bottom: 15px; color: #aaa;">Enter terminal passkey to proceed</p>
+            <input type="password" id="passkey" placeholder="••••" maxlength="4">
+            <br>
+            <button onclick="verifyCode()">Initialize</button>
+            <div id="error-msg"></div>
+        </div>
+    </div>
+
+    <div id="display-container">
+        <img id="thumbnail" src="data:image/jpeg;base64,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
